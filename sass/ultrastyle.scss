@@ -1,0 +1,252 @@
+// 1. VARIABLES
+$negro-fondo: #000000;
+$ultra-red: #ff4d4d;
+$mendoza-white: #ffffff;
+$electric-blue: #2563EB;
+$color-nav: rgb(52, 58, 64);
+$blue-blue: rgb(67, 29, 236);
+
+// 2. MIXINS DE RESPONSIVE
+@mixin s { @media (max-width: 480px) { @content; } }
+@mixin md { @media (max-width: 768px) { @content; } }
+@mixin l { @media (max-width: 1280px) { @content; } }
+
+// 3. ESTILOS GLOBALES
+body {
+    background-color: $mendoza-white;
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    padding-top: 70px; 
+    @include s { padding-top: 60px; }
+}
+
+// 4. NAVBAR
+.navbar {
+    background-color: $electric-blue;     
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 2000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+// 5. BLOQUE TÍTULO LOGO
+.titulo {
+    background-color: $negro-fondo;
+    border-radius: 3px;
+    color: $mendoza-white;
+    width: 280px; 
+    height: auto;
+    text-align: center;
+    padding: 10px 40px;
+    margin: 35px auto 20px auto;
+
+    @include md { width: 220px; font-size: 1.5rem; }
+    @include s { width: 180px; margin: 20px auto; font-size: 1.2rem; }
+
+    h1 {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        @include s { flex-direction: column; gap: 0; }
+        
+        .palabra-1 { color: $ultra-red; }
+        .palabra-2 { color: $mendoza-white; }
+    }
+}
+
+// 6. LISTA DE CATEGORÍAS
+.lista-index {
+    background-color: $negro-fondo;
+    width: 100%;
+    padding: 15px 0; 
+    margin-bottom: 40px;
+
+    .lista-principal {     
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+        gap: 30px;
+        color: $mendoza-white;
+        list-style: none; 
+        padding: 0; 
+        margin: 0; 
+
+        @include md { gap: 15px; flex-wrap: wrap; }
+        @include s { flex-direction: column; gap: 20px; padding: 10px 0; }
+
+        li {
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            @include md { font-size: 0.9rem; }
+            &:hover { color: $ultra-red; }
+
+            .last-li {
+                background-color: $electric-blue;
+                padding: 5px 15px;
+                border-radius: 20px;
+            }
+        }
+    }
+}
+
+// 7. SECCIÓN NOTICIA PRINCIPAL
+.contenedor-prensa {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    gap: 30px;
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+
+    @include md { 
+        flex-direction: column; 
+        align-items: center; 
+    }
+
+    .noticias-principales {
+        flex: 1; 
+        width: 100%;
+        min-width: 0; 
+
+        .card {
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+
+            .card-img-top {
+                width: 100%; 
+                height: 600px; 
+                object-fit: cover;
+                display: block;
+                @include l { height: 450px; }
+                @include md { height: 350px; }
+            }
+            .card-body { padding: 1.5rem 0; }
+        }
+    }
+
+    .bloque-publicidad {
+        width: 300px; 
+        flex-shrink: 0; 
+
+        #carouselPublicidad {
+            width: 100%;
+            height: 250px; 
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+
+            .carousel-inner, .carousel-item {
+                height: 100%;
+            }
+
+            .img-ads {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; 
+            }
+        }
+
+        @include md {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+    }
+}
+
+// 8. SECCIÓN DESTACADOS (AJUSTADA)
+.seccion-destacados {
+    margin-top: 20px;
+    margin-bottom: 0; // Quitamos margen inferior para unir con la publicidad
+
+    .row {
+        align-items: stretch; 
+    }
+
+    #miCarruselMendoza {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        border-radius: 15px;
+        overflow: hidden;
+        height: auto; 
+
+        .carousel-inner {
+            height: auto; 
+            .carousel-item img {
+                width: 100%;
+                height: auto; 
+                display: block; 
+                max-height: 500px; 
+                object-fit: cover;
+            }
+        }
+    }
+
+    .card-secundaria {
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        &:hover { transform: translateY(-5px); }
+        .card-img-top { height: 150px; object-fit: cover; }
+        .card-body { padding: 15px; }
+        .card-title { font-weight: bold; font-size: 1rem; margin-bottom: 5px; }
+    }
+}
+
+// 10. PUBLICIDAD FINAL (TAMAÑO DEL CARRUSEL)
+.Publicidad-final {
+    margin-top: 20px; // Espacio entre el carrusel de arriba y este
+    margin-bottom: 50px;
+
+    // Forzamos a que solo ocupe el ancho del carrusel de arriba (aprox 66.6% en desktop)
+    // Para que encaje al lado de la columna del aside
+    max-width: 66.66%; 
+    margin-left: 0; // Alineado a la izquierda para coincidir con el carrusel superior
+    
+    @include md {
+        max-width: 100%; // En tablets/móvil ocupa todo el ancho
+    }
+
+    #carouselExampleAutoplaying {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        
+        .carousel-inner {
+            .carousel-item {
+                height: 300px; 
+                @include md { height: 150px; }
+                @include s { height: 120px; }
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+        }
+    }
+}
+
+// 9. FOOTER
+.main-footer {
+    background-color: $blue-blue;
+    width: 100%;
+    padding: 40px 0;
+    margin-top: 50px;
+    .container {
+        .unorder {
+            display: flex;
+            @include md { flex-direction: column; align-items: center; gap: 10px; }
+            .nav-item .nav-link { color: $mendoza-white !important; }
+        }
+        p { color: $mendoza-white; opacity: 0.8; text-align: center; margin-top: 20px; }
+    }
+}
