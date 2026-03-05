@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Css/style.css">
+    <link rel="icon" type="image/png" href="../imagenes/icono.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title class="titulo">Ultra Mendoza</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --ink:    #1a1008;
+            --paper:  #f5f0e8;
+            --accent: #c0392b;
+            --gold:   #b8860b;
+            --muted:  #7a6a52;
+            --border: #d4c8b0;
+        }
+
+        /* CABECERA DE SECCIÓN */
+        .section-header {
+            border-top: 3px solid var(--ink);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 40px 14px;
+            display: flex;
+            align-items: baseline;
+            gap: 20px;
+            background: var(--paper);
+        }
+        .section-label {
+            font-family: 'Playfair Display', serif;
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 900;
+            line-height: 1;
+            color: var(--ink);
+            margin: 0;
+        }
+        .section-title span { color: var(--accent); }
+        .section-rule { flex: 1; height: 1px; background: var(--border); }
+        .vote-count-badge {
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            white-space: nowrap;
+            font-style: italic;
+        }
+
+        /* MAIN LAYOUT */
+        .main-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 40px;
+        }
+
+        /* CLOUD AREA */
+        .cloud-panel { position: relative; }
+        .cloud-intro {
+            font-size: 13px;
+            color: var(--muted);
+            font-style: italic;
+            margin-bottom: 24px;
+            border-left: 2px solid var(--accent);
+            padding-left: 12px;
+            line-height: 1.6;
+        }
+        .cloud-canvas {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            width: 100%;
+            height: 420px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .cloud-canvas::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(192,57,43,0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(184,134,11,0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .word-tag {
+            position: absolute;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            cursor: pointer;
+            transform-origin: center;
+            transition: transform 0.15s ease, opacity 0.15s;
+            user-select: none;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .word-tag:hover { transform: scale(1.12) !important; z-index: 10; }
+        .heat-cold { color: #5b7fa6; }
+        .heat-warm { color: #b8860b; }
+        .heat-hot  { color: #c0392b; }
+
+        /* VOTE FORM */
+        .vote-form { margin-top: 24px; display: flex; gap: 0; }
+        .vote-form input {
+            flex: 1;
+            border: 1px solid var(--ink);
+            border-right: none;
+            background: #fff;
+            padding: 10px 14px;
+            font-family: 'Source Serif 4', serif;
+            font-size: 14px;
+            color: var(--ink);
+            outline: none;
+            border-radius: 0;
+        }
+        .vote-form input::placeholder { color: var(--muted); font-style: italic; }
+        .vote-form input:focus { border-color: var(--accent); }
+        .vote-form button {
+            background: var(--ink);
+            color: var(--paper);
+            border: 1px solid var(--ink);
+            padding: 10px 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+            border-radius: 0;
+        }
+        .vote-form button:hover { background: var(--accent); border-color: var(--accent); }
+        .vote-hint {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 8px;
+            font-style: italic;
+            letter-spacing: 0.5px;
+        }
+
+        /* SIDEBAR: RANKING */
+        .ranking-panel { border-left: 1px solid var(--border); padding-left: 30px; }
+        .ranking-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 13px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        .ranking-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .ranking-item { animation: slideIn 0.4s ease both; }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        .rank-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+        .rank-num { font-family: 'Playfair Display', serif; font-size: 11px; color: var(--muted); width: 18px; text-align: right; }
+        .rank-word { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: var(--ink); flex: 1; }
+        .rank-pct  { font-family: 'Source Serif 4', serif; font-size: 13px; font-weight: 300; color: var(--accent); }
+        .rank-bar-bg { height: 3px; background: var(--border); border-radius: 1px; margin-left: 26px; }
+        .rank-bar-fill { height: 3px; background: var(--accent); border-radius: 1px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+        .rank-bar-fill.gold { background: var(--gold); }
+        .divider-ornament { text-align: center; color: var(--border); font-size: 18px; margin: 20px 0; letter-spacing: 8px; }
+        .total-info {
+            font-size: 11px;
+            color: var(--muted);
+            font-style: italic;
+            letter-spacing: 0.5px;
+            border-top: 1px solid var(--border);
+            padding-top: 14px;
+            line-height: 1.7;
+        }
+
+        /* TOAST */
+        .toast-ldlg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--ink);
+            color: var(--paper);
+            padding: 10px 22px;
+            font-family: 'Source Serif 4', serif;
+            font-size: 13px;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            z-index: 1060;
+            border-radius: 1px;
+        }
+        .toast-ldlg.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* RESPONSIVE */
+        @media (max-width: 750px) {
+            .main-container { grid-template-columns: 1fr; }
+            .ranking-panel { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 28px; }
+            .section-header { padding: 14px 20px 10px; flex-wrap: wrap; }
+            .section-title { font-size: 24px; }
+        }
+    </style>
+</head>
+
+<body class="gral">
+
+<!-- ══════ HEADER ══════ -->
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="../index.html"><span class="palabra-1">Ultra</span>Mendoza</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Sobre nosotros</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Tiempo</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Titulos
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Registrate</a></li>
+              <li><a class="dropdown-item" href="#"><span class="palabra-1">Ultra</span> club</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="../Pages/loQueDice.html">Encuesta</a></li>
+            </ul>
+          </li>
+          
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Buscar</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ══════ TÍTULO ══════ -->
+<div class="titulo">
+    <h1>
+        <span class="palabra-1">Ultra</span>
+        <span class="palabra-2">Mendoza</span>
+    </h1>
+</div>
+
+<!-- ══════ MENÚ SECCIONES ══════ -->
+<div class="lista-index">
+    <ul class="lista-principal">
+        <li><a href="../index.html"><span class="last-li">Inicio</span></a></li>
+
+        <li>            
+          <li><a href="../Pages/sociedad.html"><span class="last-li"> Sociedad</span></a>  </li>
+     </li> 
+     
+        <li>Deporte</li>
+        <li>Mundo</li>
+        <li>Policiales</li>
+        <li>Economia</li>
+        <li>Turismo</li>
+    </ul>
+</div>
+
+
+<!-- ══════ SECCIÓN: LO QUE DICE LA GENTE ══════ -->
+
+<header class="section-header">
+    <span class="section-label">Participación ciudadana</span>
+    <div class="section-rule"></div>
+    <h2 class="section-title">Lo que dice <span>la gente</span></h2>
+    <div class="section-rule"></div>
+    <span class="vote-count-badge" id="headerCount">0 votos registrados</span>
+</header>
+
+<div class="main-container">
+
+    <!-- NUBE DE OPINIÓN -->
+    <div class="cloud-panel">
+        <p class="cloud-intro">
+            ¿Qué temas querés que Ultra Mendoza investigue? Escribí tu propuesta
+            o tocá cualquier palabra para sumarle un voto. El tamaño refleja el
+            interés colectivo.
+        </p>
+        <div class="cloud-canvas" id="cloudCanvas"></div>
+        <div class="vote-form">
+            <input type="text" id="topicInput" placeholder="Proponé un tema…" maxlength="30" />
+            <button onclick="addOrVote()">+ Sumar</button>
+        </div>
+        <p class="vote-hint">Presioná Enter o hacé clic en una palabra para votar por ella.</p>
+    </div>
+
+    <!-- RANKING -->
+    <aside class="ranking-panel">
+        <p class="ranking-title">Temas más votados</p>
+        <ul class="ranking-list" id="rankingList"></ul>
+        <div class="divider-ornament">— ✦ —</div>
+        <p class="total-info" id="totalInfo">
+            Participaron <strong>0</strong> personas.<br>
+            Los temas más votados guiarán la agenda editorial de la semana.
+        </p>
+    </aside>
+
+</div>
+
+<div class="toast-ldlg" id="toastMsg"></div>
+
+
+<!-- ══════ FOOTER ══════ -->
+<footer class="main-footer">
+    <div class="container">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3 unorder">
+            <li class="nav-item"><a href="#" class="nav-link px-2">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2">Features</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2">Pricing</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2">About</a></li>
+        </ul>
+        <p class="text-center">&copy; 2026 Ultra Mendoza, Inc</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ── ESTADO ──────────────────────────────────────────────────────
+const STORAGE_KEY = 'ultraMendoza_ldlg_v1';
+
+let topics = loadData() || [
+    { text: 'Salud pública',   votes: 18 },
+    { text: 'Educación',        votes: 14 },
+    { text: 'Seguridad',        votes: 11 },
+    { text: 'Medio ambiente',   votes: 9  },
+    { text: 'Vivienda',         votes: 7  },
+    { text: 'Corrupción',       votes: 6  },
+    { text: 'Empleo',           votes: 5  },
+    { text: 'Inflación',        votes: 4  },
+];
+
+let votedThisSession = new Set();
+
+function loadData() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) { return null; }
+}
+function saveData() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(topics)); } catch(e) {}
+}
+
+// ── NUBE ────────────────────────────────────────────────────────
+const placed = [];
+
+function getHeat(votes, max) {
+    const r = votes / max;
+    if (r > 0.65) return 'heat-hot';
+    if (r > 0.30) return 'heat-warm';
+    return 'heat-cold';
+}
+function getFontSize(votes, max) {
+    return 13 + Math.round((votes / max) * 41);
+}
+function overlaps(a, b) {
+    return !(a.x + a.w < b.x || b.x + b.w < a.x || a.y + a.h < b.y || b.y + b.h < a.y);
+}
+function tryPlace(el, cw, ch) {
+    const w = el.offsetWidth + 10, h = el.offsetHeight + 6;
+    for (let i = 0; i < 220; i++) {
+        const t = i * 0.45, r = i * 3.5;
+        const x = Math.max(4, Math.min(cw/2 + r*Math.cos(t) - w/2, cw - w - 4));
+        const y = Math.max(4, Math.min(ch/2 + r*Math.sin(t) - h/2, ch - h - 4));
+        const box = { x, y, w, h };
+        if (!placed.some(p => overlaps(p, box))) {
+            placed.push(box);
+            el.style.left = x + 'px';
+            el.style.top  = y + 'px';
+            return;
+        }
+    }
+}
+
+function renderCloud() {
+    const canvas = document.getElementById('cloudCanvas');
+    canvas.innerHTML = '';
+    placed.length = 0;
+    const sorted = [...topics].sort((a, b) => b.votes - a.votes);
+    const max = sorted[0]?.votes || 1;
+    const cw  = canvas.offsetWidth;
+    const ch  = canvas.offsetHeight;
+
+    sorted.forEach(topic => {
+        const el = document.createElement('span');
+        el.className = 'word-tag ' + getHeat(topic.votes, max);
+        el.textContent = topic.text;
+        el.style.fontSize = getFontSize(topic.votes, max) + 'px';
+        el.title = `${topic.text} — ${topic.votes} votos`;
+        el.addEventListener('click', () => voteFor(topic.text));
+        canvas.appendChild(el);
+        tryPlace(el, cw, ch);
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 0.5s ease, transform 0.15s ease';
+        setTimeout(() => { el.style.opacity = '1'; }, Math.random() * 400);
+    });
+}
+
+// ── RANKING ─────────────────────────────────────────────────────
+function renderRanking() {
+    const list   = document.getElementById('rankingList');
+    const sorted = [...topics].sort((a, b) => b.votes - a.votes).slice(0, 8);
+    const total  = topics.reduce((s, t) => s + t.votes, 0) || 1;
+
+    list.innerHTML = '';
+    sorted.forEach((topic, i) => {
+        const pct = Math.round((topic.votes / total) * 100);
+        const li  = document.createElement('li');
+        li.className = 'ranking-item';
+        li.style.animationDelay = (i * 60) + 'ms';
+        li.innerHTML = `
+            <div class="rank-row">
+                <span class="rank-num">${i + 1}.</span>
+                <span class="rank-word">${topic.text}</span>
+                <span class="rank-pct">${pct}%</span>
+            </div>
+            <div class="rank-bar-bg">
+                <div class="rank-bar-fill ${i === 0 ? 'gold' : ''}"
+                     style="width:0%" data-target="${pct}"></div>
+            </div>`;
+        list.appendChild(li);
+    });
+
+    requestAnimationFrame(() => {
+        document.querySelectorAll('.rank-bar-fill').forEach(b => {
+            b.style.width = b.dataset.target + '%';
+        });
+    });
+
+    const totalVotes = topics.reduce((s, t) => s + t.votes, 0);
+    document.getElementById('totalInfo').innerHTML =
+        `Participaron <strong>${totalVotes}</strong> personas.<br>
+         Los temas más votados guiarán la agenda editorial de la semana.`;
+    document.getElementById('headerCount').textContent =
+        `${totalVotes} voto${totalVotes !== 1 ? 's' : ''} registrado${totalVotes !== 1 ? 's' : ''}`;
+}
+
+// ── ACCIONES ────────────────────────────────────────────────────
+function voteFor(text) {
+    if (votedThisSession.has(text)) {
+        showToast(`Ya votaste por "${text}" en esta sesión.`);
+        return;
+    }
+    const topic = topics.find(t => t.text.toLowerCase() === text.toLowerCase());
+    if (topic) {
+        topic.votes++;
+        votedThisSession.add(text);
+        saveData();
+        renderAll();
+        showToast(`✓ Voto registrado: "${text}"`);
+    }
+}
+
+function addOrVote() {
+    const input = document.getElementById('topicInput');
+    const raw   = input.value.trim();
+    if (!raw) return;
+    const existing = topics.find(t => t.text.toLowerCase() === raw.toLowerCase());
+    if (existing) {
+        voteFor(existing.text);
+    } else {
+        const key = '__new__' + raw.toLowerCase();
+        if (votedThisSession.has(key)) { showToast('Ya propusiste este tema.'); return; }
+        topics.push({ text: raw, votes: 1 });
+        votedThisSession.add(key);
+        saveData();
+        renderAll();
+        showToast(`✓ Tema propuesto: "${raw}"`);
+    }
+    input.value = '';
+}
+
+let toastTimer;
+function showToast(msg) {
+    const t = document.getElementById('toastMsg');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function renderAll() { renderCloud(); renderRanking(); }
+
+document.getElementById('topicInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addOrVote();
+});
+
+window.addEventListener('load', renderAll);
+window.addEventListener('resize', () => {
+    clearTimeout(window._rt);
+    window._rt = setTimeout(renderAll, 200);
+});
+</script>
+
+</body>
+</html>

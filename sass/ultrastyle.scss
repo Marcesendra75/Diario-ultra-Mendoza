@@ -3,13 +3,19 @@ $negro-fondo: #000000;
 $ultra-red: #ff4d4d;
 $mendoza-white: #ffffff;
 $electric-blue: #2563EB;
-$color-nav: rgb(52, 58, 64);
-$blue-blue: rgb(67, 29, 236);
+$color-nav: #343a40;
+$blue-blue: #431dec;
+$sombreado: #0000001a;
+
+
+
+
 
 // 2. MIXINS DE RESPONSIVE
 @mixin s { @media (max-width: 480px) { @content; } }
 @mixin md { @media (max-width: 768px) { @content; } }
 @mixin l { @media (max-width: 1280px) { @content; } }
+
 
 // 3. ESTILOS GLOBALES
 body {
@@ -88,6 +94,10 @@ body {
                 background-color: $electric-blue;
                 padding: 5px 15px;
                 border-radius: 20px;
+                color: $mendoza-white;
+                text-decoration: none;
+                &:hover { color: $ultra-red; }
+
             }
         }
     }
@@ -248,5 +258,83 @@ body {
             .nav-item .nav-link { color: $mendoza-white !important; }
         }
         p { color: $mendoza-white; opacity: 0.8; text-align: center; margin-top: 20px; }
+    }
+}
+
+// 11. SECCIÓN SOCIEDAD (Ajustada a tus mixins)
+.society {
+    margin: 40px auto;
+    padding: 0 15px;
+
+    .contenedor-sociedad {
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+
+        // Responsive: En tablets (md: 768px) se pone en columna
+        @include md {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    .noticias-sociedad {
+        flex: 1; // Toma el espacio restante
+        width: 100%;
+    }
+
+    .card-sociedad {
+        border: none;
+        box-shadow: 0 5px 15px $sombreado;
+        border-radius: 12px;
+        overflow: hidden;
+
+        .card-img-top {
+            width: 100%;
+            height: 300px; // Requerimiento: 300x300px (el ancho lo da la columna)
+            object-fit: cover;
+
+            // Ajuste para pantallas pequeñas (s: 480px)
+            @include s {
+                height: 200px; 
+            }
+        }
+    }
+}
+
+// 12. ASIDE PUBLICIDAD (Derecha -> Abajo)
+.aside-publicidad {
+    width: 300px; // Ancho fijo para publicidad en desktop
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    // En pantallas grandes pero no gigantes (l: 1280px)
+    @include l {
+        width: 280px;
+    }
+
+    // En tablet y móvil (md: 768px) se estira al 100% y se mueve abajo
+    @include md {
+        width: 100%;
+        max-width: 500px; // Para que no quede gigante en tablet
+        margin-top: 30px;
+    }
+
+    .carousel {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px $sombreado;
+
+        img {
+            width: 100%;
+            height: 300px; // Mantenemos simetría con las cards
+            object-fit: cover;
+            
+            @include md {
+                height: 200px; // Más petiso en móvil para no ocupar tanto scroll
+            }
+        }
     }
 }

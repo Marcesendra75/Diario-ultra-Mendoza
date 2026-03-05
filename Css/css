@@ -269,7 +269,7 @@ body {
 }
 
 .main-footer {
-  background-color: #431dec;
+  background-color: rgb(67, 29, 236);
   width: 100%;
   padding: 40px 0;
   margin-top: 50px;
@@ -315,7 +315,7 @@ body {
 }
 .society .card-sociedad {
   border: none;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1019607843);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   overflow: hidden;
 }
@@ -335,7 +335,7 @@ body {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 }
 @media (max-width: 1280px) {
   .aside-publicidad {
@@ -352,7 +352,7 @@ body {
 .aside-publicidad .carousel {
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1019607843);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 .aside-publicidad .carousel img {
   width: 100%;
@@ -365,4 +365,4 @@ body {
   }
 }
 
-/*# sourceMappingURL=style.css.map */
+/*# sourceMappingURL=css.map */
